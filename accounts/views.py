@@ -1,11 +1,13 @@
-from django.shortcuts import render, redirect
-from django.urls import is_valid_path
-from django.views import View
 from .forms import UserRegisterationForm, VerifyCodeForm
 from .models import OtpCode, User
 import random
 from utils import send_otp_code
 from django.contrib import messages
+from re import I
+from django.shortcuts import render, redirect, get_object_or_404
+from django.views import View
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 
 class UserRegisterView(View):
     form_class = UserRegisterationForm
@@ -30,7 +32,7 @@ class UserRegisterView(View):
             messages.success(request, 'we sent you a code', 'success')
             return redirect('accounts:verify_code')
         return render(request, self.template_name, {'form':form})
-    
+
     
 class UserRegisterVerifyCodeView(View):
     form_class = VerifyCodeForm
